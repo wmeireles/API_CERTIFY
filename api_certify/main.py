@@ -19,6 +19,7 @@ from api_certify.exceptions.handlers import (
 from api_certify.routes.v1.auth_routes import auth_routes
 from api_certify.routes.v1.certificate_routes import certificate_routes
 from api_certify.routes.v1.event_routes import event_routes
+from api_certify.routes.v1.upload_routes import upload_routes
 
 
 @asynccontextmanager
@@ -114,3 +115,12 @@ API_PREFIX = "/api/v1"
 app.include_router(auth_routes, prefix=API_PREFIX)
 app.include_router(certificate_routes, prefix=API_PREFIX)
 app.include_router(event_routes, prefix=API_PREFIX)
+app.include_router(upload_routes, prefix=API_PREFIX)
+
+# Servir arquivos estáticos (uploads)
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+uploads_path = Path(__file__).parent.parent / "uploads"
+uploads_path.mkdir(parents=True, exist_ok=True)
+app.mount("/static/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
